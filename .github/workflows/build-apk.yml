@@ -1,0 +1,49 @@
+name: Build APK Percobaan
+on:
+  workflow_dispatch:
+    inputs:
+      api_base_url:
+        description: Alamat HTTPS backend dengan akhiran /api/v1
+        required: true
+        default: https://chem-promise-dogs-skirt.trycloudflare.com/api/v1
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+          channel: stable
+          cache: true
+      - name: Siapkan konfigurasi build
+        env:
+          API_BASE_URL: ${{ inputs.api_base_url }}
+          DEPLOY_TEST_TOKEN: ${{ secrets.DEPLOY_TEST_TOKEN }}
+        run: |
+          test -n "$DEPLOY_TEST_TOKEN" || { echo 'Tambahkan secret DEPLOY_TEST_TOKEN'; exit 1; }
+          python3 - <<'PYTHON'
+          import json, os
+          from pathlib import Path
+          Path('build-config.json').write_text(json.dumps({
+              'API_BASE_URL': os.environ['API_BASE_URL'],
+              'DEPLOY_TEST_TOKEN': os.environ['DEPLOY_TEST_TOKEN']}))
+          PYTHON
+      - run: flutter pub get
+      - run: flutter test
+      - run: flutter build apk --release --dart-define-from-file=build-config.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Bersih-Laundry-APK-Percobaan
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 7
+      - name: Hapus konfigurasi sementara
+        if: always()
+        run: rm -f build-config.json

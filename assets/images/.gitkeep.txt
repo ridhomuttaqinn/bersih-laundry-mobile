@@ -1,0 +1,1 @@
+Placeholder file agar folder assets tidak kosong saat build (Flutter mensyaratkan direktori aset berisi minimal satu file). Ganti dengan aset gambar/logo sesuai kebutuhan Anda.

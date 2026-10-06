@@ -1,0 +1,1 @@
+Placeholder file agar folder assets tidak kosong saat build. Ganti dengan aset ikon sesuai kebutuhan Anda.
