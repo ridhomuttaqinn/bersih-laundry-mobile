@@ -1,3 +1,4 @@
+import '../../../core/widgets/pickup_navigation_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
@@ -90,6 +91,7 @@ class _OrderDetailBody extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _InfoRow(icon: Icons.location_on_outlined, label: 'Alamat', value: order.alamatJemput),
+              PickupNavigationButton(address: order.alamatJemput),
               const Divider(height: 20),
               _InfoRow(icon: Icons.event_outlined, label: 'Jadwal', value: order.jadwalJemput),
               if (order.namaKasir != null) ...[

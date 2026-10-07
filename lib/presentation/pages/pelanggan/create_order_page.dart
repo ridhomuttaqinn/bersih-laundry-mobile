@@ -1,3 +1,5 @@
+import 'package:latlong2/latlong.dart';
+import '../shared/pickup_map_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
@@ -45,6 +47,7 @@ class CreateOrderPage extends ConsumerStatefulWidget {
 }
 
 class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
+  LatLng? _pickupPoint;
   final _alamatController = TextEditingController();
   final _jadwalController = TextEditingController();
 
@@ -253,7 +256,9 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
 
     final order = await ref.read(orderActionProvider.notifier).createOrder(
           idPelanggan: session!.id,
-          alamatJemput: _alamatController.text.trim(),
+          alamatJemput: _pickupPoint == null
+              ? _alamatController.text.trim()
+              : '${_alamatController.text.trim()}\nTitik jemput: https://www.google.com/maps/search/?api=1&query=${_pickupPoint!.latitude.toStringAsFixed(6)},${_pickupPoint!.longitude.toStringAsFixed(6)}',
           jadwalJemput: cart.jadwalJemput,
           items: cart.items,
           metodeBayarPilihan: cart.metodeBayarPilihan,
@@ -393,6 +398,20 @@ class _CreateOrderPageState extends ConsumerState<CreateOrderPage> {
                   maxLines: 2,
                   prefixIcon: const Icon(Icons.location_on_outlined),
                 ),
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.map_outlined),
+                  label: Text(_pickupPoint == null ? 'Pilih titik di peta' : 'Ubah titik penjemputan'),
+                  onPressed: () async {
+                    final point = await Navigator.push<LatLng>(context,
+                      MaterialPageRoute(builder: (_) => PickupMapPage(initialPoint: _pickupPoint)));
+                    if (point != null && mounted) setState(() => _pickupPoint = point);
+                  },
+                ),
+                if (_pickupPoint != null) Row(children: [
+                  Expanded(child: Text('Titik tersimpan: ${_pickupPoint!.latitude.toStringAsFixed(5)}, ${_pickupPoint!.longitude.toStringAsFixed(5)}')),
+                  IconButton(tooltip: 'Hapus titik', icon: const Icon(Icons.close),
+                    onPressed: () => setState(() => _pickupPoint = null)),
+                ]),
                 const SizedBox(height: AppSizes.md),
                 // Revisi bug: seluruh area field kini bisa diketuk (readOnly +
                 // onTap), bukan cuma ikon kecil di kanan seperti sebelumnya.

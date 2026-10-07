@@ -68,7 +68,7 @@ class PesananRemoteDatasource {
     required Map<int, double> beratAktualPerDetail,
   }) async {
     final data = await ApiClient.patch('/pesanan/$idPesanan/berat', body: {
-      'berat_aktual_per_detail': beratAktualPerDetail,
+      'berat_aktual_per_detail': beratAktualPerDetail.map((key, value) => MapEntry(key.toString(), value)),
     });
     return _toPesanan(data);
   }

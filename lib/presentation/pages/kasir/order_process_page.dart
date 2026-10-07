@@ -1,3 +1,4 @@
+import '../../../core/widgets/pickup_navigation_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_colors.dart';
@@ -250,6 +251,7 @@ class _ProcessBody extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _row(Icons.location_on_outlined, 'Alamat', order.alamatJemput),
+              PickupNavigationButton(address: order.alamatJemput),
               const Divider(height: 20),
               _row(Icons.event_outlined, 'Jadwal', order.jadwalJemput),
             ],
