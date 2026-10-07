@@ -1,10 +1,13 @@
 name: Build APK Percobaan
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       api_base_url:
         description: Alamat HTTPS backend dengan akhiran /api/v1
-        required: true
+        required: false
         default: https://chem-promise-dogs-skirt.trycloudflare.com/api/v1
 permissions:
   contents: read
@@ -25,7 +28,7 @@ jobs:
           cache: true
       - name: Siapkan konfigurasi build
         env:
-          API_BASE_URL: ${{ inputs.api_base_url }}
+          API_BASE_URL: ${{ inputs.api_base_url || 'https://chem-promise-dogs-skirt.trycloudflare.com/api/v1' }}
           DEPLOY_TEST_TOKEN: ${{ secrets.DEPLOY_TEST_TOKEN }}
         run: |
           test -n "$DEPLOY_TEST_TOKEN" || { echo 'Tambahkan secret DEPLOY_TEST_TOKEN'; exit 1; }
