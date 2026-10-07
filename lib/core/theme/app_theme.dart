@@ -51,7 +51,7 @@ class AppTheme {
       ),
       // Elevasi lembut + shadow halus menggantikan gaya flat+border murni,
       // agar hierarki visual antar card lebih terasa tanpa jadi berat.
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.surface,
         elevation: 1.5,
         shadowColor: AppColors.shadow.withOpacity(0.10),
